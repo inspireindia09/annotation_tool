@@ -1,25 +1,24 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import './App.css';
+import Annotation from './Component/Annotation/Annotation';
+import Testing from './Component/Testing/Testing';
+import 'bootstrap'
+export class App extends Component {
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route path="/" exact component={Annotation} />
+          <Route path="/testing" exact component={Testing} />
+          <Redirect from='*' to='/' />
+        </Switch>
+      </Router>
+    );
+  }
 }
 
 export default App;

@@ -1,0 +1,7 @@
+export const logo = require('./logo.png')
+export const annotation = require('./annotation.png')
+export const testing = require('./testing.png')
+export const upload = require('./upload.png')
+export const vid_icon = require('./vid_icon.png')
+export const vid_upload = require('./vid_upload.png')
+export const img_placeholder = require('./img_placeholder.png')
