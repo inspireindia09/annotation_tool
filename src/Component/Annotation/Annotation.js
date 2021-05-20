@@ -11,7 +11,7 @@ class Annotation extends Component {
     }
 
     render() {
-        const { loader } = this.state
+        // const { loader } = this.state
         return (
             <>
                 <div className="container-fluid">

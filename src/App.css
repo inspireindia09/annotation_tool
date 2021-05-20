@@ -7,13 +7,57 @@ body {
 nav {
   background: #ffffff;
 }
-nav ul {
+.guise-navbar ul {
   display: flex;
   align-items: center;
   list-style: none;
-  justify-content: left;
-  width: 80%;
+  justify-content: left; 
   margin: 0 auto;
+  margin-left: 0;
+}
+.guise_slider{
+  padding: 28px;
+  padding-bottom: 70px;
+  margin-bottom: 70px; 
+}
+
+.guise_slider .carousel-control-next, 
+.guise_slider .carousel-control-prev{
+  top: calc(100% - 31px); 
+  background: #FFFFFF;
+    border: 1px solid #0038FF;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px -2px rgb(0 0 0 / 25%);
+    border-radius: 10px;
+    color: #0038FF;
+    font-size: 14px;
+    font-weight: 800;
+    opacity: 1;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    line-height: 30px;
+}
+.guise_slider .carousel-control-next{
+  right: 28px; left: auto;
+}
+.guise_slider .carousel-control-prev{
+  left: 28px; right: auto;
+}
+.slide_wrap{
+  position: relative;
+}
+.slide_wrap .slide_indicator{
+  position: absolute;
+  bottom: 50px; width: 100%;
+  color: #8F8FD6;
+  font-size: 12px;
+  text-align: center;
+  font-weight: bold;
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon{
+  display: none;
 }
 .guise-navbar ul li { 
   font-style: normal;
@@ -23,6 +67,41 @@ nav ul {
   color: #1f1a76;
   cursor: pointer;
   margin-right: 43px;
+}
+
+.vechile_list{
+  padding: 35px 30px;
+}
+.vechile_list h4{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #403F95;
+  font-weight: bold;
+  padding-bottom: 13px;
+}
+.vechile_list .list_check{
+  padding-left: 0;
+  list-style: none;
+}
+.vechile_list li{
+  border-top: 1px solid #ECECEC;
+  padding: 11px 5px;
+  font-size: 14px;
+  color: #13116C;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+.vechile_list li:last-child{
+  border-bottom:1px solid #ECECEC;
+}
+.vechile_list li input[type='checkbox']{
+  width: 16px; height: 16px;
+  margin-right: 4px;
+  vertical-align: middle;
 }
 nav ul li img {
   padding-right: 5px;
@@ -94,7 +173,7 @@ nav ul li:first-child {
 }
 .main_container {
   padding: 25px 37px; 
-  height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +186,7 @@ nav ul li:first-child {
   background-color: #ffffff;
   width: 100%;
 } 
-.main_container .inner-wrap .col-sm-6:first-child{
+.main_container .inner-wrap [class*='col-']:first-child{
   border-right: 1px solid #E3E3E3;
 }
 .upload_wrap h4{
