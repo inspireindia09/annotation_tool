@@ -40,7 +40,77 @@ class Testing extends Component {
             }));
     }
     componentDidMount() {
-        this.frameAnnotations(this.state.frameSize)
+        if (window.localStorage.getItem('file') === '' && window.localStorage.getItem('video') === '') {
+            this.backToHome()
+        } else {
+            this.frameAnnotations(this.state.frameSize)
+        }
+        this.deleteVideo();
+        this.deleteModel();
+    }
+    deleteVideo = () => {
+        this.setState({
+            loader: true
+        })
+        let formdata = new FormData();
+        formdata.append("fileName", window.localStorage.getItem("video"));
+
+        let requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow'
+        };
+
+
+        fetch("http://3.7.113.14/delete_video", requestOptions)
+            .then(response => response.text())
+            .then(
+                (result) => {
+                    this.setState({
+                        loader: false,
+                    })
+                    if (result.ok) {
+                        window.localStorage.setItem("video", "")
+                    }
+                },
+                // (error) => {
+                //     this.setState({
+                //         successMsg: 'Something Went Wrong !',
+                //     });
+                // }
+            )
+    }
+    deleteModel = () => {
+        this.setState({
+            loader: true
+        })
+        let formdata = new FormData();
+        formdata.append("fileName", window.localStorage.getItem("file"));
+
+        let requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow'
+        };
+
+
+        fetch("http://3.7.113.14/delete_model", requestOptions)
+            .then(response => response.text())
+            .then(
+                (result) => {
+                    this.setState({
+                        loader: false,
+                    })
+                    if (result.ok) {
+                        window.localStorage.setItem("file", "")
+                    }
+                },
+                // (error) => {
+                //     this.setState({
+                //         successMsg: 'Something Went Wrong !',
+                //     });
+                // }
+            )
     }
     backToHome = () => {
         this.props.history.push('/')

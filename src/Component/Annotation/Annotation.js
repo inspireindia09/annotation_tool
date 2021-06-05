@@ -16,6 +16,74 @@ class Annotation extends Component {
 
         }
     }
+    componentDidMount() {
+        this.deleteVideo();
+        this.deleteModel();
+    }
+    deleteVideo = () => {
+        this.setState({
+            loader: true
+        })
+        let formdata = new FormData();
+        formdata.append("fileName", window.localStorage.getItem("video"));
+
+        let requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow'
+        };
+
+
+        fetch("http://3.7.113.14/delete_video", requestOptions)
+            .then(response => response.text())
+            .then(
+                (result) => {
+                    this.setState({
+                        loader: false,
+                    })
+                    if (result.ok) {
+                        window.localStorage.setItem("video", "")
+                    }
+                },
+                // (error) => {
+                //     this.setState({
+                //         successMsg: 'Something Went Wrong !',
+                //     });
+                // }
+            )
+    }
+    deleteModel = () => {
+        this.setState({
+            loader: true
+        })
+        let formdata = new FormData();
+        formdata.append("fileName", window.localStorage.getItem("file"));
+
+        let requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow'
+        };
+
+
+        fetch("http://3.7.113.14/delete_model", requestOptions)
+            .then(response => response.text())
+            .then(
+                (result) => {
+                    this.setState({
+                        loader: false,
+                    })
+                    if (result.ok) {
+                        window.localStorage.setItem("file", "")
+                    }
+                },
+                // (error) => {
+                //     this.setState({
+                //         successMsg: 'Something Went Wrong !',
+                //     });
+                // }
+            )
+    }
     selectImgSize = (e) => {
         if (e.target.value !== '') {
             this.setState({
@@ -44,7 +112,6 @@ class Annotation extends Component {
         }
     }
     uploadExcelFileData = () => {
-        window.localStorage.setItem("file", this.state.excelFile.name);
         this.setState({
             loader: true
         })
@@ -63,21 +130,30 @@ class Annotation extends Component {
 
         fetch("http://3.7.113.14/upload_model", requestOptions)
             .then(response => response.text())
-            .then(result => console.log(result), this.setState({
-                loader: false,
-                excelFile: null,
-                successMsg: 'Uploaded Successfully',
-                uploadedModel: true,
-                uploaded: true
-            }))
-            .catch(error => console.log('error', error), this.setState({
-                excelFile: null,
-                successMsg: 'Something Went Wrong !',
-                uploaded: true
-            }));
+            .then(
+                (result) => {
+                    window.localStorage.setItem("file", result)
+                    this.setState({
+                        loader: false,
+                        excelFile: null,
+                        successMsg: 'Uploaded Successfully',
+                        uploadedModel: true,
+                        uploaded: true,
+                        uploadedFile: false
+                    })
+                },
+                (error) => {
+                    this.setState({
+                        excelFile: null,
+                        successMsg: 'Something Went Wrong !',
+                        uploaded: true,
+                        uploadedFile: false
+                    });
+                }
+            )
+
     }
     uploadVideoFile = () => {
-        window.localStorage.setItem("video", this.state.videoFile.name);
         this.setState({
             loader: true
         })
@@ -91,10 +167,10 @@ class Annotation extends Component {
             redirect: 'follow'
         };
         fetch("http://3.7.113.14/upload_video", requestOption)
-            .then(res => res.json())
+            .then(data => data.text())
             .then(
                 (result) => {
-                    console.log(result)
+                    window.localStorage.setItem("video", result);
                     this.setState({
                         loader: false,
                         uploaded: false,
@@ -129,16 +205,24 @@ class Annotation extends Component {
 
 
         fetch("http://3.7.113.14/get_annotations", requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result), this.setState({
-                loader: false,
-                uploadedModel: false,
-                imgSize: null
-            }))
-            this.props.history.push('/testing')
-            .catch(error => console.log('error', error), this.setState({
-                successMsg: 'Something Went Wrong !',
-            }));
+            .then(response => response)
+            .then(
+                (result) => {
+                    this.setState({
+                        loader: false,
+                        uploadedModel: false,
+                        imgSize: null
+                    })
+                    if (result.ok) {
+                        this.props.history.push('/testing')
+                    }
+                },
+                (error) => {
+                    this.setState({
+                        successMsg: 'Something Went Wrong !'
+                    });
+                }
+            )
     }
     render() {
         // const { loader } = this.state
@@ -196,7 +280,7 @@ class Annotation extends Component {
                                                 <div className="progress_bar">
                                                     <div className="legends">
                                                         <span className="filename">{this.state.videoFile && this.state.videoFile.name}</span>
-                                                        <span className="completed">{this.state.uploaded ? '100%' : '0%'}</span>
+                                                        <span className="completed">{this.state.uploaded && this.state.videoFile !== null ? '100%' : '0%'}</span>
                                                     </div>
                                                     <span className="bar_place"><span className="bar" style={this.state.uploaded ? { width: '100%' } : { width: '0%' }}></span></span>
                                                 </div>
@@ -204,7 +288,7 @@ class Annotation extends Component {
                                             </li>
                                             <li>
                                                 {!this.state.uploaded &&
-                                                <p className="text-success">{this.state.successMsg}</p>}
+                                                    <p className="text-success">{this.state.successMsg}</p>}
                                             </li>
                                         </ul>
                                     </div>
@@ -218,13 +302,13 @@ class Annotation extends Component {
                                                 <img src={vid_upload.default} />Upload Model
                                             </h4>
                                             <label htmlFor="test1">
-                                                <input className="custom-file-input" type="file" id="test1" onChange={(e) => this.uploadExcelFile(e)} accept=".pt" name="excelFile" 
-                                                selectedFile={this.state.uploadedFile && 'yes'}/>
+                                                <input className="custom-file-input" type="file" id="test1" onChange={(e) => this.uploadExcelFile(e)} accept=".pt" name="excelFile"
+                                                    selectedfile={this.state.uploadedFile ? 'yes' : 'no'} />
 
                                             </label>
-                                            {this.state.uploadedModel&&
-                                            <p className="text-success">{this.state.successMsg}</p>}
-                                            {this.state.uploadedFile ?
+                                            {this.state.uploadedModel &&
+                                                <p className="text-success">{this.state.successMsg}</p>}
+                                            {this.state.uploadedFile && !this.state.uploadedModel ?
                                                 <button className="guise_btn uploadExcel_btn" onClick={this.uploadExcelFileData}>Upload</button> : null}
                                         </div>
                                     </div>
@@ -233,10 +317,10 @@ class Annotation extends Component {
                                             <h4 className="upload_head">
                                                 <img src={img_placeholder.default} />Choose Image Size
                                     </h4>
-                                            {this.state.excelFile === null ?
+                                            {this.state.excelFile === null && !this.state.uploadedModel ?
                                                 <select className="form-control" disabled>
                                                     <option defaultValue={null}>Choose Image Size</option>
-                                                    
+
                                                 </select> :
                                                 <select className="form-control" onChange={(e) => this.selectImgSize(e)}>
                                                     <option defaultValue={null}>Choose Image Size</option>
@@ -252,7 +336,7 @@ class Annotation extends Component {
                                     </div>
                                 </div>
                                 {this.state.uploadedModel &&
-                                <button className="guise_btn uploadExcel_btn text-right" onClick={this.runModel}>Run Model</button>}
+                                    <button className="guise_btn uploadExcel_btn text-right" onClick={this.runModel}>Run Model</button>}
                             </div>
                         </div>
                     </div>
